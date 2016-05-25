@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+	  <head>
+	    <title>查看地图</title>
+	    <link rel='stylesheet' href='/stylesheets/style.css' />
+	    <link rel="stylesheet" href="">
+	
+	<script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=ede3f0ab0cf7aadae5f4274df7811272"></script>
+	  </head>
+	  <body>
+		<div id="container" style="width:500px;height: 500px"></div> 
+     </body>
+     <script>
+		var x1=<%= x %>
+		var y1=<%= y %>
+		// var t1='{{ $t }}'
+		 console.log(x1,y1)
+		// console.log(typeof(x1),typeof(y1),typeof(t1))
+		x=x1.toString();
+		y=y1.toString();
+		//t=parseInt(t1)		
+		var d=new Date();
+		function formatDate(d){
+		  var   year=d.getFullYear();     
+          var   month=d.getMonth()+1;     
+          var   date=d.getDate();     
+          var   hour=d.getHours();     
+          var   minute=d.getMinutes();     
+          var   second=d.getSeconds();
+          return year+'-'+month+'-'+date+' '+hour+':'+minute+':'+second   
+		}
+		d1=formatDate(d)
+		//var d1=t1
+	  var map = new AMap.Map('container'); 
+	  var position=[x,y]
+	  map.setZoom(15)
+	  //map.setCenter(['120.736732','31.250018']);
+	  map.setCenter(position);
+	  var marker = new AMap.Marker({
+        position: position,
+        map:map
+      });
+        //marker.setMap();
+          var address=''
+          var infowindow={}
+          AMap.service('AMap.Geocoder',function(){//回调函数
+		        //实例化Geocoder
+		      var   geocoder = new AMap.Geocoder({
+		            //city: "010"//城市，默认：“全国”
+		        });
+		        //TODO: 使用geocoder 对象完成相关功能
+		        geocoder.getAddress([x, y], function(status, result) {
+		            if (status === 'complete' && result.info === 'OK') {
+		               //获得了有效的地址信息:
+		               //即，result.regeocode.formattedAddress
+		               	address=result.regeocode.formattedAddress
+		               	
+		               	infowindow = new AMap.InfoWindow({
+						     content: '<h3 class="title">91加云网</h1>'+
+						              '<h4>签到时间为:</h4>'+d1+
+						             '<div class="content">地点是'+address+
+						             '</div>',
+						     offset: new AMap.Pixel(0, -30),
+						     size:new AMap.Size(230,0)
+						})
+		            }else{
+		               //获取地址失败
+		            }
+		          }); 
+		    })
+          
+         // alert(address)
+        
+        var clickHandle = AMap.event.addListener(marker, 'click', function() {
+			    infowindow.open(map, marker.getPosition())
+			})
+
+        AMap.plugin(['AMap.ToolBar','AMap.Scale'],function(){
+		    var toolBar = new AMap.ToolBar();
+		    var scale = new AMap.Scale();
+		    map.addControl(toolBar);
+		    map.addControl(scale);
+		})
+
+		// AMap.plugin('AMap.AdvancedInfoWindow',function(){
+		//   var infowindow = new AMap.AdvancedInfoWindow({
+		//     content: '<h3 class="title">高德地图</h1>'+
+		//              '<div class="content">高德是中国领先的数字地图内容、'+
+		//              '导航和位置服务解决方案提供商。</div>',
+		//     offset: new AMap.Pixel(0, -30),
+		//     asOrigin:false
+		//   });
+		//   infowindow.open(map,new AMap.LngLat(120.736732, 31.250018));
+		// })
+
+
+		
+        
+        
+        //console.log(a)
+        //var json=JSON.parse(a)
+        //alert(a)
+</script>
+</html>

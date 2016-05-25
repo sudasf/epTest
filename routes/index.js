@@ -7,11 +7,16 @@ var UserSchema=new mongoose.Schema({
 	name:String,
 	password:String,
 })
+// var a=require('./a').a
+// var add=require('./a').add
+
+global.a1=1
 
 var User=mongoose.model('User',UserSchema)
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
+
     res.render('index', { title: 'Express' });
 });
 
@@ -82,6 +87,14 @@ router.get('/home',function(req, res, next){
 router.get('/logout',function(req, res, next){
 	req.session.user=null
 	res.redirect('/login')
+})
+
+router.get('/rn',function(req,res,next){
+	res.json({name:'sunfeng'})
+})
+
+router.get('/map/:x/:y',function(req,res,next){
+	res.render('map',{x:req.params.x,y:req.params.y})
 })
 
 function setHash(psd){
